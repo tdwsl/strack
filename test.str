@@ -38,6 +38,8 @@ multiples :
 
 "MULTIPLES" def? . "\n" .
 
+"WORLD HELLO . . " eval "\n" .
+
 7 multiples .s
 
 "MULTIPLES" :

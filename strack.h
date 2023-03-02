@@ -24,7 +24,8 @@ enum {
     INS_ISNIL, INS_EQU, INS_GRE, INS_LES, INS_GREEQU, INS_LESEQU,
     INS_ADD, INS_SUB, INS_DIV, INS_MOD, INS_MUL,
     INS_AND, INS_OR,
-    INS_ISDEFINED, INS_BYE,
+    INS_CHR, INS_ORD,
+    INS_EVAL, INS_ISDEFINED, INS_BYE,
 
     INS_CFUN,
     INS_PUSHSTR,
@@ -42,7 +43,8 @@ const char *primStrs[] = {
     "NIL?", "=", ">", "<", ">=", "<=",
     "+", "-", "/", "MOD", "*",
     "AND", "OR",
-    "DEF?", "BYE",
+    "CHR", "ORD",
+    "EVAL", "DEF?", "BYE",
     0,
 };
 
@@ -244,6 +246,7 @@ void inputBuf(char *buf, int max) {
 }
 
 int isDefined(char *s);
+void eval(char *s);
 
 void doPrim(int p) {
     int n, m;
@@ -370,6 +373,18 @@ void doPrim(int p) {
         break;
     case INS_OR:
         pushBool(strcmp(pop(), "NIL") || strcmp(pop(), "NIL"));
+        break;
+    case INS_CHR:
+        n = number(pop());
+        buf[0] = n;
+        buf[1] = 0;
+        push(buf);
+        break;
+    case INS_ORD:
+        pushNum(*pop());
+        break;
+    case INS_EVAL:
+        eval(pop());
         break;
     case INS_ISDEFINED:
         pushBool(isDefined(pop()));
@@ -659,6 +674,21 @@ void runLine(char *s) {
         }
     }
     if(cf & 2) error("unterminated comment");
+}
+
+void eval(char *s) {
+    char *p;
+    char buf[2048];
+    strcpy(buf, s);
+    s = buf;
+    while(s) {
+        p = s;
+        s = strchr(s, '\n');
+        if(s) *(s++) = 0;
+        runLine(p);
+    }
+    if(cf&1) error("unterminated word in eval");
+    cf = 0;
 }
 
 void runFile(const char *filename) {
