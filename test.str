@@ -23,10 +23,9 @@ test :
   drop "\n" . ;
 test
 
-"ahhhhhahwhh\n" .
 "+" def? . "\n" .
-"-" .s def? . "\n" .
-"WAH" .s def? . "\n" .
+"-" def? . "\n" .
+"WAH" def? . "\n" .
 "MULTIPLES" def? . "\n" .
 
 multiples :
