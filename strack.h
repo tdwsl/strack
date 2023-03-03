@@ -322,8 +322,7 @@ void doPrim(int p) {
         append();
         break;
     case INS_LEN:
-        assDepth(1);
-        n = strlen(pop())+1;
+        n = strlen(pop());
         pushNum(n);
         break;
     case INS_SSET:
