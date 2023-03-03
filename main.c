@@ -8,6 +8,7 @@ int main(int argc, char **args) {
         for(;;) {
             inputBuf(buf, 100);
             runLine(buf);
+            printf("\n");
         }
     } else {
         for(i = 1; i < argc; i++) runFile(args[i]);
