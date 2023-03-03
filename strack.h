@@ -323,7 +323,8 @@ void doPrim(int p) {
         break;
     case INS_LEN:
         assDepth(1);
-        pushNum(strlen(stack[sp-1]));
+        n = strlen(pop())+1;
+        pushNum(n);
         break;
     case INS_SSET:
         assDepth(3);
