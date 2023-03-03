@@ -51,3 +51,6 @@ multiples :
 "MULTIPLES" see
 7 multiples .s
 
+nil if true else false then . "\n" .
+t if true else false then . "\n" .
+
