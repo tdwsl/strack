@@ -18,7 +18,7 @@
 
 enum {
     INS_DROP=0,
-    INS_SWAP, INS_DUP, INS_OVER, INS_PICK,
+    INS_SWAP, INS_DUP, INS_OVER, INS_NIP, INS_PICK,
     INS_IFDUP, INS_ROT, INS_MROT,
     INS_SETV, INS_GETV, INS_LEFT, INS_RIGHT, INS_APP, INS_LEN,
     INS_SSET, INS_SGET,
@@ -38,7 +38,7 @@ enum {
 
 const char *primStrs[] = {
     "DROP",
-    "SWAP", "DUP", "OVER", "PICK",
+    "SWAP", "DUP", "OVER", "NIP", "PICK",
     "?DUP", "ROT", "-ROT",
     "!", "@", ":$", "$:", "~", "#",
     "$!", "$@",
@@ -100,6 +100,7 @@ void delVar(char *v) {
     p += strlen(p)+1;
     while(p < e)
         *(v++) = *(p++);
+    p = v;
     while(p < e)
         *(p++) = 0;
 }
@@ -273,6 +274,10 @@ void doPrim(int p) {
         assDepth(2);
         push(stack[sp-2]);
         break;
+    case INS_NIP:
+        assDepth(2);
+        stackDel(sp-2);
+        break;
     case INS_PICK:
         n = number(pop());
         assDepth(n+1);
@@ -389,10 +394,10 @@ void doPrim(int p) {
         pushNum(n * m);
         break;
     case INS_AND:
-        pushBool(strcmp(pop(), "NIL") && strcmp(pop(), "NIL"));
+        pushBool(!!strcmp(pop(), "NIL") & !!strcmp(pop(), "NIL"));
         break;
     case INS_OR:
-        pushBool(strcmp(pop(), "NIL") || strcmp(pop(), "NIL"));
+        pushBool(!!strcmp(pop(), "NIL") | !!strcmp(pop(), "NIL"));
         break;
     case INS_CHR:
         n = number(pop());
@@ -776,17 +781,29 @@ void f_see() {
     printWord(n);
 }
 
+void f_printVars() {
+    int i;
+    char *s;
+    s = varBuf;
+    while(*s) {
+        printString(s, " = ");
+        s += strlen(s)+1;
+        printString(s, "\n");
+        s += strlen(s)+1;
+    }
+}
+
 void init() {
+    int i;
     /*bzero(varBuf, VARBUF_SZ);
     bzero(stackBuf, STACKBUF_SZ);*/
-    int i;
     for(i = 0; i < VARBUF_SZ; i++) varBuf[i] = 0;
     for(i = 0; i < STACKBUF_SZ; i++) stackBuf[i] = 0;
     addCfun("INPUT", f_input);
     addCfun(".", f_print);
     addCfun(".S", f_printStack);
     addCfun("SEE", f_see);
+    addCfun(".V", f_printVars);
 }
 
 #endif
-
