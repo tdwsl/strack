@@ -62,6 +62,7 @@ char *stack[STACK_SZ];
 int sp = 0;
 uint8_t dict[DICT_SZ];
 int here = 0;
+int old;
 void (*cfuns[MAX_CFUNS])();
 const char *cfunNames[MAX_CFUNS];
 int ncfuns = 0;
