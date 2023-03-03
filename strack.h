@@ -627,7 +627,7 @@ void runLine(char *s) {
                     cstack[csp++] = here;
                     here += 2;
                 } else if(!strcmp("THEN", buf)) {
-                    setD(cstack[csp-1], here-cstack[csp-1]+2);
+                    setD(cstack[csp-1], here-cstack[csp-1]-2);
                     csp--;
                 } else if(!strcmp("ELSE", buf)) {
                     addIns(INS_B);
