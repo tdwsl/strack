@@ -21,6 +21,7 @@ enum {
     INS_SWAP, INS_DUP, INS_OVER, INS_PICK,
     INS_IFDUP, INS_ROT, INS_MROT,
     INS_SETV, INS_GETV, INS_LEFT, INS_RIGHT, INS_APP, INS_LEN,
+    INS_SSET, INS_SGET,
     INS_ISNIL, INS_EQU, INS_GRE, INS_LES, INS_GREEQU, INS_LESEQU,
     INS_ADD, INS_SUB, INS_DIV, INS_MOD, INS_MUL,
     INS_AND, INS_OR,
@@ -40,6 +41,7 @@ const char *primStrs[] = {
     "SWAP", "DUP", "OVER", "PICK",
     "?DUP", "ROT", "-ROT",
     "!", "@", ":$", "$:", "~", "#",
+    "$!", "$@",
     "NIL?", "=", ">", "<", ">=", "<=",
     "+", "-", "/", "MOD", "*",
     "AND", "OR",
@@ -317,6 +319,23 @@ void doPrim(int p) {
     case INS_LEN:
         assDepth(1);
         pushNum(strlen(stack[sp-1]));
+        break;
+    case INS_SSET:
+        assDepth(3);
+        n = number(pop());
+        if(n >= 0 && n < strlen(stack[sp-2]))
+            stack[sp-2][n] = stack[sp-1][0];
+        sp--;
+        break;
+    case INS_SGET:
+        assDepth(2);
+        n = number(pop());
+        if(n >= 0 && n < strlen(stack[sp-1])) {
+            buf[0] = stack[sp-1][n];
+            buf[1] = 0;
+            push(buf);
+        } else
+            push("NIL");
         break;
     case INS_ISNIL:
         pushBool(!strcmp(pop(), "NIL"));
