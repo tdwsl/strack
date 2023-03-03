@@ -22,7 +22,7 @@ enum {
     INS_IFDUP, INS_ROT, INS_MROT,
     INS_SETV, INS_GETV, INS_LEFT, INS_RIGHT, INS_APP, INS_LEN,
     INS_SSET, INS_SGET,
-    INS_ISNIL, INS_EQU, INS_GRE, INS_LES, INS_GREEQU, INS_LESEQU,
+    INS_NOT, INS_EQU, INS_NEQU, INS_GRE, INS_LES, INS_GREEQU, INS_LESEQU,
     INS_ADD, INS_SUB, INS_DIV, INS_MOD, INS_MUL,
     INS_AND, INS_OR,
     INS_CHR, INS_ORD,
@@ -42,7 +42,7 @@ const char *primStrs[] = {
     "?DUP", "ROT", "-ROT",
     "!", "@", ":$", "$:", "~", "#",
     "$!", "$@",
-    "NOT", "=", ">", "<", ">=", "<=",
+    "NOT", "=", "<>", ">", "<", ">=", "<=",
     "+", "-", "/", "MOD", "*",
     "AND", "OR",
     "CHR", "ORD",
@@ -346,11 +346,14 @@ void doPrim(int p) {
             push("NIL");
         }
         break;
-    case INS_ISNIL:
+    case INS_NOT:
         pushBool(!strcmp(pop(), "NIL"));
         break;
     case INS_EQU:
         pushBool(!strcmp(pop(), pop()));
+        break;
+    case INS_NEQU:
+        pushBool(strcmp(pop(), pop()));
         break;
     case INS_GRE:
         m = number(pop());
