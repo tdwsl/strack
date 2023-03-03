@@ -19,7 +19,7 @@
 enum {
     INS_DROP=0,
     INS_SWAP, INS_DUP, INS_OVER, INS_NIP, INS_PICK,
-    INS_IFDUP, INS_ROT, INS_MROT,
+    INS_IFDUP, INS_ROT, INS_MROT, INS_DEPTH,
     INS_SETV, INS_GETV, INS_LEFT, INS_RIGHT, INS_APP, INS_LEN,
     INS_SSET, INS_SGET,
     INS_NOT, INS_EQU, INS_NEQU, INS_GRE, INS_LES, INS_GREEQU, INS_LESEQU,
@@ -39,7 +39,7 @@ enum {
 const char *primStrs[] = {
     "DROP",
     "SWAP", "DUP", "OVER", "NIP", "PICK",
-    "?DUP", "ROT", "-ROT",
+    "?DUP", "ROT", "-ROT", "DEPTH",
     "!", "@", ":$", "$:", "~", "#",
     "$!", "$@",
     "NOT", "=", "<>", ">", "<", ">=", "<=",
@@ -299,6 +299,9 @@ void doPrim(int p) {
         stackDel(sp-4);
         push(stack[sp-3]);
         stackDel(sp-4);
+        break;
+    case INS_DEPTH:
+        pushNum(sp);
         break;
     case INS_SETV:
         assDepth(2);
