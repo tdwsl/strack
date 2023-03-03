@@ -338,9 +338,12 @@ void doPrim(int p) {
         if(n >= 0 && n < strlen(stack[sp-1])) {
             buf[0] = stack[sp-1][n];
             buf[1] = 0;
+            sp--;
             push(buf);
-        } else
+        } else {
+            sp--;
             push("NIL");
+        }
         break;
     case INS_ISNIL:
         pushBool(!strcmp(pop(), "NIL"));
