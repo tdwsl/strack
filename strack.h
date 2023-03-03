@@ -219,10 +219,10 @@ void left() {
     int n, l, i;
     assDepth(2);
     n = number(pop());
-    if(n <= 0) { pop(); return; }
+    if(n <= 0) { pop(); push("NIL"); return; }
     l = strlen(stack[sp-1]);
     l -= n;
-    if(l <= 0) return;
+    if(l <= 0) { push("NIL"); return; }
     for(i = 0; i <= l; i++)
         stack[sp-1][n+i] = 0;
 }
@@ -231,9 +231,9 @@ void right() {
     int n, l, i;
     assDepth(2);
     n = number(pop());
-    if(n <= 0) { pop(); return; }
+    if(n <= 0) { pop(); push("NIL"); return; }
     l = strlen(stack[sp-1]);
-    if(n >= l) return;
+    if(n >= l) { push("NIL"); return; }
     for(i = 0; i < n; i++)
         stack[sp-1][i] = stack[sp-1][i+l-n];
     for(i = n; i < l; i++)
