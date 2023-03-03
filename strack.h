@@ -777,8 +777,11 @@ void f_see() {
 }
 
 void init() {
-    bzero(varBuf, VARBUF_SZ);
-    bzero(stackBuf, STACKBUF_SZ);
+    /*bzero(varBuf, VARBUF_SZ);
+    bzero(stackBuf, STACKBUF_SZ);*/
+    int i;
+    for(i = 0; i < VARBUF_SZ; i++) varBuf[i] = 0;
+    for(i = 0; i < STACKBUF_SZ; i++) stackBuf[i] = 0;
     addCfun("INPUT", f_input);
     addCfun(".", f_print);
     addCfun(".S", f_printStack);
