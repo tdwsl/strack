@@ -222,7 +222,7 @@ void left() {
     if(n <= 0) { pop(); push("NIL"); return; }
     l = strlen(stack[sp-1]);
     l -= n;
-    if(l <= 0) { push("NIL"); return; }
+    if(l <= 0) return;
     for(i = 0; i <= l; i++)
         stack[sp-1][n+i] = 0;
 }
@@ -233,7 +233,7 @@ void right() {
     n = number(pop());
     if(n <= 0) { pop(); push("NIL"); return; }
     l = strlen(stack[sp-1]);
-    if(n >= l) { push("NIL"); return; }
+    if(n >= l) return;
     for(i = 0; i < n; i++)
         stack[sp-1][i] = stack[sp-1][i+l-n];
     for(i = n; i < l; i++)
