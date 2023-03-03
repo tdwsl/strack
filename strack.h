@@ -714,7 +714,6 @@ void runLine(char *s) {
             }
         }
     }
-    if(cf & 2) error("unterminated comment");
     fflush(stdout);
 }
 
