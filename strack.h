@@ -605,6 +605,7 @@ void runLine(char *s) {
             }
             if(!strcmp(buf, "\\")) return;
             if(!strcmp(buf, "(")) { cf |= 2; continue; }
+        redo:
             if(cf) {
                 if((n = strIndex(primStrs, buf)) != -1) {
                     addIns(n);
@@ -656,14 +657,23 @@ void runLine(char *s) {
                 } else {
                     addStr(buf);
                 }
+                if(csp == 0 && (cf & 4)) {
+                    addIns(INS_RET);
+                    run(old);
+                    here = old;
+                    cf = 0;
+                }
             } else if(!strcmp(":", buf)) {
                 addWord(pop());
                 cf = 1;
             } else if((n = strIndex(primStrs, buf)) != -1) {
                 doPrim(n);
             } else if((n = strIndex(cmpStrs, buf)) != -1) {
-                printf("%s is compile only\n", buf);
-                error("compile only word");
+                /*printf("%s is compile only\n", buf);
+                error("compile only word");*/
+                old = here;
+                cf = 5;
+                goto redo;
             } else if((n = strnIndex(cfunNames, ncfuns, buf)) != -1) {
                 cfuns[n]();
             } else if((n = findWord(buf)) != -1) {
