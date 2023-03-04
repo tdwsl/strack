@@ -26,7 +26,7 @@ enum {
     INS_ADD, INS_SUB, INS_DIV, INS_MOD, INS_MUL,
     INS_AND, INS_OR,
     INS_CHR, INS_ORD,
-    INS_EVAL, INS_ISDEFINED, INS_BYE,
+    INS_INVOKE, INS_ISDEFINED, INS_BYE,
 
     INS_CFUN,
     INS_PUSHSTR,
@@ -46,7 +46,7 @@ const char *primStrs[] = {
     "+", "-", "/", "MOD", "*",
     "AND", "OR",
     "CHR", "ORD",
-    "EVAL", "DEF?", "BYE",
+    "CALL", "DEF?", "BYE",
     0,
 };
 
@@ -250,7 +250,7 @@ void inputBuf(char *buf, int max) {
 }
 
 int isDefined(char *s);
-void eval(char *s);
+void invoke(char *s);
 
 void doPrim(int p) {
     int n, m;
@@ -417,8 +417,8 @@ void doPrim(int p) {
     case INS_ORD:
         pushNum(*pop());
         break;
-    case INS_EVAL:
-        eval(pop());
+    case INS_INVOKE:
+        invoke(pop());
         break;
     case INS_ISDEFINED:
         pushBool(isDefined(pop()));
@@ -590,6 +590,14 @@ void printWord(int n) {
     }
 }
 
+void invoke(char *s) {
+    int n;
+    if((n = strIndex(primStrs, s)) != -1) doPrim(n);
+    else if((n = findWord(s)) != -1) run(words[n]);
+    else if((n = strnIndex(cfunNames, ncfuns, s)) != -1) cfuns[n]();
+    else error("unknown word for CALL");
+}
+
 void runLine(char *s) {
     char buf[200];
     char *p;
@@ -708,10 +716,10 @@ void runLine(char *s) {
                 old = here;
                 cf = 5;
                 goto redo;
-            } else if((n = strnIndex(cfunNames, ncfuns, buf)) != -1) {
-                cfuns[n]();
             } else if((n = findWord(buf)) != -1) {
                 run(words[n]);
+            } else if((n = strnIndex(cfunNames, ncfuns, buf)) != -1) {
+                cfuns[n]();
             } else {
                 push(buf);
             }
@@ -720,7 +728,7 @@ void runLine(char *s) {
     fflush(stdout);
 }
 
-void eval(char *s) {
+/*void eval(char *s) {
     char *p;
     char buf[2048];
     strcpy(buf, s);
@@ -733,7 +741,7 @@ void eval(char *s) {
     }
     if(cf&1) error("unterminated word in eval");
     cf = 0;
-}
+}*/
 
 void runFile(const char *filename) {
     FILE *fp;
